@@ -1,0 +1,14 @@
+{
+    "name": "perspective-helper",
+    "displayName":  "Perspective Helper",
+    "description":  "Simple utility for perspective line drawing",
+    "version":  "0.1",
+    "license":  "MIT",
+    "author": {"name": "Nulldsik", "email": "nulldisk@protonmail.com"},
+    "categories": ["Scripts"],
+    "contributes": {
+        "scripts": [
+            {"path": "./main.lua"}
+        ]
+    }
+}
