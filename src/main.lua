@@ -377,20 +377,10 @@ function init(plugin)
         title="Draw line from V1",
         group="edit_new",
         onclick=function()
-            local guides_layer = find_layer(GUIDE_LAYER_NAME)
-
-            if guides_layer then
-                local storage_type = plugin.preferences["storage_type"]
-                local storage_path = plugin.preferences["storage_path"]
-                local settings = load_settings(storage_type, storage_path)
-                local color = app.pixelColor.rgba(0,0,0)
-                local pilot_pos = find_pixel_position()
-
-                if pilot_pos then
-                    local vp_pos = Point{settings["vp1_pos"], settings["horizon_height"]} 
-                    draw_perspective_line(vp_pos, pilot_pos, color)
-                end
-            end
+            local storage_type = plugin.preferences["storage_type"]
+            local storage_path = plugin.preferences["storage_path"]
+            local settings = load_settings(storage_type, storage_path)
+            draw_perspective_line(settings["vp1_pos"], settings["horizon_height"])
         end,
         onenabled=function()
             if not app.activeSprite then
@@ -406,20 +396,10 @@ function init(plugin)
         title="Draw line from V2",
         group="edit_new",
         onclick=function()
-            local guides_layer = find_layer(GUIDE_LAYER_NAME)
-
-            if guides_layer then
-                local storage_type = plugin.preferences["storage_type"]
-                local storage_path = plugin.preferences["storage_path"]
-                local settings = load_settings(storage_type, storage_path)
-                local color = app.pixelColor.rgba(0,0,0)
-                local pilot_pos = find_pixel_position()
-
-                if pilot_pos then
-                    local vp_pos = Point{settings["vp2_pos"], settings["horizon_height"]} 
-                    draw_perspective_line(vp_pos, pilot_pos, color)
-                end
-            end
+            local storage_type = plugin.preferences["storage_type"]
+            local storage_path = plugin.preferences["storage_path"]
+            local settings = load_settings(storage_type, storage_path)
+            draw_perspective_line(settings["vp2_pos"], settings["horizon_height"])
         end,
         onenabled=function()
             if not app.activeSprite then
@@ -435,30 +415,16 @@ function init(plugin)
         title="Draw lines from vanishing points",
         group="edit_new",
         onclick=function()
-            local guides_layer = find_layer(GUIDE_LAYER_NAME)
+            local storage_type = plugin.preferences["storage_type"]
+            local storage_path = plugin.preferences["storage_path"]
+            local settings = load_settings(storage_type, storage_path)
 
-            if guides_layer then
-                local storage_type = plugin.preferences["storage_type"]
-                local storage_path = plugin.preferences["storage_path"]
-                local settings = load_settings(storage_type, storage_path)
-                local color = app.pixelColor.rgba(0,0,0)
-                local pilot_pos = find_pixel_position()
+            local points = {
+                {settings["vp1_pos"], settings["horizon_height"]},
+                {settings["vp2_pos"], settings["horizon_height"]}
+            }
 
-                if pilot_pos then
-                    local points = {
-                        Point{settings["vp1_pos"],settings["horizon_height"]},
-                        Point{settings["vp2_pos"],settings["horizon_height"]}
-                    }
-
-                    app.transaction(
-                        function()
-                            for _, vp_pos in ipairs(points) do
-                                draw_perspective_line(vp_pos, pilot_pos, color)
-                            end
-                        end
-                    )
-                end
-            end
+            draw_perspective_lines(points)
         end,
         onenabled=function()
             if not app.activeSprite then

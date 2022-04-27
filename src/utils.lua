@@ -87,7 +87,6 @@ end
 --Returns the position of the pixel and executes an undo
 --action if successful, otherwise returns false.
 function find_pixel_position()
-
     if not is_pixel_present(app.activeImage, app.pixelColor.rgba(255,0,0)) then
         return false
     end

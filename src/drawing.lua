@@ -6,22 +6,39 @@ function draw_vanishing_point(image, pos_x, pos_y, color)
     image:drawPixel(pos_x, pos_y+1, color)
 end
 
-function draw_perspective_line(vp_pos, pilot_pos, color)
+function draw_perspective_line(vp_pos, horizon_height, pilot_pos)
     local target_layer = find_layer(GUIDE_LAYER_NAME)
+    pilot_pos = pilot_pos or find_pixel_position()
 
-    if not target_layer then
-        print("no layer found")
-        --TODO: add a dialog asking to create a guide layer if it doesn't exist
-        return false
+    if target_layer then
+        local line_color = app.pixelColor.rgba(0,0,0)
+
+        if pilot_pos then
+            local vp_point = Point{vp_pos, horizon_height}
+
+            app.useTool{
+                tool="pencil",
+                points={pilot_pos, vp_point},
+                color=line_color,
+                layer=target_layer
+            }
+
+        end
     end
+end
 
-    app.useTool{
-        tool="pencil",
-        points={pilot_pos, vp_pos},
-        color=color,
-        layer=target_layer
-    }
-    
+function draw_perspective_lines(points)
+    local pilot_pos = find_pixel_position()
+
+    if pilot_pos then
+        app.transaction(
+            function()
+                for _, point in ipairs(points) do
+                    draw_perspective_line(point[1], point[2], pilot_pos)
+                end
+            end
+        )
+    end
 end
 
 --Line code based on Alois Zingl work released under the
