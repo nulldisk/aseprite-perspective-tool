@@ -305,9 +305,12 @@ end
 
 function reset_preview(dialog)
     local dialog_data = dialog.data
+    dialog_data["perspective_type"] = "2 Vanishing Points"
     dialog_data["horizon_height"] = app.activeSprite.height/2
+    dialog_data["vertical_horizon_height"] = app.activeSprite.width/2
     dialog_data["vp1_pos"] = app.activeSprite.width/8
     dialog_data["vp2_pos"] = app.activeSprite.width - app.activeSprite.width/8
+    dialog_data["vp3_pos"] = app.activeSprite.height/8
     dialog_data["line_count"] = 10
     dialog_data["line_spread"] = 0
     dialog.data = dialog_data
