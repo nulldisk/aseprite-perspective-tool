@@ -30,6 +30,14 @@ function init(plugin)
         focus=false
     }
 
+    plugin_config_dialog:check
+    {
+        id="preview_auto_update",
+        label="Preview",
+        text="Update preview automatically when fields are edited",
+        selected=true
+    }
+
     plugin_config_dialog:label
     {
         text="                                                    "
@@ -81,14 +89,16 @@ function init(plugin)
     {
         id="horizon_height",
         text="0",
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
     {
         id="vertical_horizon_height",
         text="0",
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     -- Horizon controls --
@@ -151,21 +161,24 @@ function init(plugin)
     {
         id="vp1_pos", 
         text="0", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
     {
         id="vp2_pos", 
         text="0", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
    
     config_dialog:number
     {
         id="vp3_pos", 
         text="0", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     -- VP1 Controls--
@@ -252,14 +265,16 @@ function init(plugin)
     {
         id="line_count", 
         text="10", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
     {
         id="line_spread", 
         text="0", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     -- Line Count Controls --
@@ -323,7 +338,8 @@ function init(plugin)
     {
         id="line_opacity", 
         text="255", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     config_dialog:check

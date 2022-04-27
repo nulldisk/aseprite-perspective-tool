@@ -39,6 +39,8 @@ function plugin_save_pref(plugin, pref, value)
                 throw_error(string.format(message, value, pref))
             end
         end
+    elseif pref == "preview_auto_update" then
+        plugin.preferences[pref] = value
     else
         throw_error("Attempted to set an unknown pref '" .. pref .. "'")
     end

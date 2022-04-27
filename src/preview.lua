@@ -256,22 +256,28 @@ function draw_preview(dialog, bake)
 end
 
 --Redraws the perspective preview based on the provided dialog data.
-function update_preview_layer(dialog)
-    local preview_layer = find_layer(PREVIEW_LAYER_NAME)
-    if dialog.data["show_preview"] == true then
-        if not preview_layer then
-            local layer = app.activeSprite:newLayer()
-            layer.name = PREVIEW_LAYER_NAME
-        end
-        dialog_validate_values(dialog)
-        draw_preview(dialog)
-        save_settings_to_layer(GUIDE_LAYER_NAME, dialog.data)
-    else
-        if preview_layer then
-            app.activeSprite:deleteLayer(PREVIEW_LAYER_NAME)
-        end
+function update_preview_layer(dialog, should_update)
+    if should_update == nil then
+        should_update = true
     end
-    app.refresh()
+
+    if should_update then
+        local preview_layer = find_layer(PREVIEW_LAYER_NAME)
+        if dialog.data["show_preview"] == true then
+            if not preview_layer then
+                local layer = app.activeSprite:newLayer()
+                layer.name = PREVIEW_LAYER_NAME
+            end
+            dialog_validate_values(dialog)
+            draw_preview(dialog)
+            save_settings_to_layer(GUIDE_LAYER_NAME, dialog.data)
+        else
+            if preview_layer then
+                app.activeSprite:deleteLayer(PREVIEW_LAYER_NAME)
+            end
+        end
+        app.refresh()
+    end
 end
 
 --Writes the current perspective preview onto a guide layer.
