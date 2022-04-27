@@ -74,7 +74,7 @@ end
 
 function string_to_table(string)
     local t = {}
-    for k, v in string.gmatch(string, "([%w_]+)=([%w_ ]+)") do
+    for k, v in string.gmatch(string, "([%w_]+)=([%w_ -]+)") do
         if v == "true" then v = true end
         if v == "false" then v = false end
         t[k] = v
