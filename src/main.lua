@@ -411,6 +411,25 @@ function init(plugin)
     }
 
     plugin:newCommand{
+        id="DrawLineV3",
+        title="Draw line from V3",
+        group="edit_new",
+        onclick=function()
+            local storage_type = plugin.preferences["storage_type"]
+            local storage_path = plugin.preferences["storage_path"]
+            local settings = load_settings(storage_type, storage_path)
+            draw_perspective_line(settings["vertical_horizon_height"], settings["vp3_pos"])
+        end,
+        onenabled=function()
+            if not app.activeSprite then
+                return false
+            else
+                return true
+            end
+        end
+    }
+
+    plugin:newCommand{
         id="DrawLineAll",
         title="Draw lines from vanishing points",
         group="edit_new",
