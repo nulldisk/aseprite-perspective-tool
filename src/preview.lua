@@ -150,8 +150,11 @@ function draw_preview(dialog, bake)
 
         local h_sprite_center = app.activeSprite.width/2
         local v_sprite_center = app.activeSprite.height/2
-        local spread = {0 - line_spread, app.activeSprite.height + line_spread}
-        local step = (math.abs(spread[1]) + math.abs(spread[2]))/line_count
+        
+        local v_spread = {0 - line_spread, app.activeSprite.height + line_spread}
+        local h_spread = {0 - line_spread, app.activeSprite.width + line_spread}
+        local v_step = (math.abs(v_spread[1]) + math.abs(v_spread[2]))/line_count
+        local h_step = (math.abs(h_spread[1]) + math.abs(h_spread[2]))/line_count
 
         local pc = app.pixelColor
         local vp1_line_color = pc.rgba(0,0,0,line_opacity)
@@ -178,7 +181,7 @@ function draw_preview(dialog, bake)
             local y1 = horizon_height
 
             local x2 = vhorizon_height
-            local y2 = spread[1] + (step * i)
+            local y2 = v_spread[1] + (v_step * i)
 
             local offset = math.abs(x1) + app.activeSprite.width
             local v_norm = math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
@@ -190,12 +193,13 @@ function draw_preview(dialog, bake)
                 draw_line(preview_image, Point{xs[1], xs[2]}, Point{xs[3], xs[4]}, vp1_line_color)
             end
 
+            -- Drawing VP2 --
             if perspective_type >= 2 then
                 local x1 = vp2_pos
                 local y1 = horizon_height
 
                 local x2 = vhorizon_height
-                local y2 = spread[1] + (step * i)
+                local y2 = v_spread[1] + (v_step * i)
 
                 local offset = math.abs(x1)
                 local v_norm = math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
@@ -208,11 +212,12 @@ function draw_preview(dialog, bake)
                 end
             end
 
+            -- Drawing VP3 --
             if perspective_type >= 3 then
                 local x1 = vhorizon_height
                 local y1 = vp3_pos
 
-                local x2 = spread[1] + (step * i)
+                local x2 = h_spread[1] + (h_step * i)
                 local y2 = horizon_height
 
                 local offset = app.activeSprite.height
