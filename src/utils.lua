@@ -138,3 +138,15 @@ function throw_error(message)
     --print(string.format("ERROR: %s", message))
     app.alert{title="ERROR", text=message}
 end
+
+function can_draw_perspective_line()
+    if not app.activeSprite then
+        return false
+    end
+
+    if not find_layer(GUIDE_LAYER_NAME) then
+        return false
+    end
+
+    return true
+end

@@ -399,11 +399,7 @@ function init(plugin)
             draw_perspective_line(settings["vp1_pos"], settings["horizon_height"])
         end,
         onenabled=function()
-            if not app.activeSprite then
-                return false
-            else
-                return true
-            end
+            return can_draw_perspective_line()
         end
     }
 
@@ -418,11 +414,7 @@ function init(plugin)
             draw_perspective_line(settings["vp2_pos"], settings["horizon_height"])
         end,
         onenabled=function()
-            if not app.activeSprite then
-                return false
-            else
-                return true
-            end
+            return can_draw_perspective_line()
         end
     }
 
@@ -437,11 +429,7 @@ function init(plugin)
             draw_perspective_line(settings["vertical_horizon_height"], settings["vp3_pos"])
         end,
         onenabled=function()
-            if not app.activeSprite then
-                return false
-            else
-                return true
-            end
+            return can_draw_perspective_line()
         end
     }
 
@@ -462,11 +450,7 @@ function init(plugin)
             draw_perspective_lines(points)
         end,
         onenabled=function()
-            if not app.activeSprite then
-                return false
-            else
-                return true
-            end
+            return can_draw_perspective_line()
         end
     }
 
