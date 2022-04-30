@@ -24,6 +24,7 @@ function draw_perspective_line(vp_pos, horizon_height, pilot_pos)
                 color=line_color,
                 layer=target_layer
             }
+
         end
     end
 end
@@ -45,8 +46,8 @@ end
 --Line code based on Alois Zingl work released under the
 --MIT license http://members.chello.at/easyfilter/bresenham.html
 function draw_line(image, a_pos, b_pos, color)
-    local a = a_pos
-    local b = b_pos
+    local a = Point(a_pos.x, a_pos.y)
+    local b = Point(b_pos.x, b_pos.y)
     local dx = math.abs(b.x-a.x)
     local sx = 0
     local sy = 0
