@@ -481,7 +481,7 @@ function init(plugin)
 
                 if perspective_settings == "DIR_NOT_FOUND" then
                     local message = "'%s' directory doesn't exist."
-                    throw_error(string.format(message, storage_path))
+                    show_popup(string.format(message, storage_path))
                     return false
                 end
             end
@@ -509,7 +509,7 @@ function init(plugin)
                     local perspective_settings = load_settings(storage_type, storage_path)
 
                     if not perspective_settings then
-                        throw_error("Couldn't load perspective settings")
+                        show_popup("Couldn't load perspective settings")
                         return false
                     end
 

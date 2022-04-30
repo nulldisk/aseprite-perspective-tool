@@ -28,7 +28,7 @@ function save_settings_to_file(path, data)
         local message = "Can't write '%s'. " ..
                         "Make sure the specified directory exists " ..
                         "and you have write permissions."
-        throw_error(string.format(message, path))
+        show_popup(string.format(message, path))
         return false
     end
     file:write(table_to_string(data))
