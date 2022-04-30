@@ -465,10 +465,10 @@ function init(plugin)
             if storage_type == "file" then
                 if not app.fs.isFile(app.activeSprite.filename) then
                     local message = "Your perspective data storage is set to 'file' mode " ..
-                                    "but the project doesn't have a file. Please save " ..
+                                    "but the project doesn't have a file.\nPlease save " ..
                                     "the project and give it a name before editing " ..
                                     "perspective settings."
-                    print(message)
+                    show_info_popup(message)
                     return false
                 end
 
