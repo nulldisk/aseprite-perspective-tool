@@ -468,7 +468,7 @@ function init(plugin)
                                     "but the project doesn't have a file.\nPlease save " ..
                                     "the project and give it a name before editing " ..
                                     "perspective settings."
-                    show_info_popup(message)
+                    show_popup(message)
                     return false
                 end
 
