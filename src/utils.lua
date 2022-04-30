@@ -96,6 +96,8 @@ function find_pixel_position()
     local spr_w = app.activeSprite.width
     local spr_h = app.activeSprite.height
 
+    local removed_selection = clear_active_selection()
+
     --put two temporary pixels in the corners of the sprite to ensure
     --the size of image matches the sprite
     app.useTool{
@@ -118,6 +120,11 @@ function find_pixel_position()
             --undo the two corner pixels placed before
             app.command.Undo()
             app.command.Undo()
+
+            -- undo deselect if it happened
+            if removed_selection then
+                app.command.Undo()
+            end
 
             --undo the pilot pixel
             app.command.Undo()

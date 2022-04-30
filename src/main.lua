@@ -498,6 +498,8 @@ function init(plugin)
                 )
             end
 
+            local removed_selection = clear_active_selection()
+
             -- Load perspective settings and show the perspective config dialog
             -- inside a transaction.
             app.transaction(
@@ -540,6 +542,10 @@ function init(plugin)
                             points={Point{0,0}} }
                     guide_layer:cel(1).image = oven
                     end)
+            end
+
+            if removed_selection then
+                app.activeSprite.selection = removed_selection
             end
         end,
         onenabled=function()

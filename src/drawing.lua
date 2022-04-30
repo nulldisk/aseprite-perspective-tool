@@ -16,13 +16,14 @@ function draw_perspective_line(vp_pos, horizon_height, pilot_pos)
         if pilot_pos then
             local vp_point = Point{vp_pos, horizon_height}
 
+            local removed_selection = clear_active_selection()
+
             app.useTool{
                 tool="pencil",
                 points={pilot_pos, vp_point},
                 color=line_color,
                 layer=target_layer
             }
-
         end
     end
 end
