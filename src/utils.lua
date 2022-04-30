@@ -146,6 +146,11 @@ function throw_error(message)
     app.alert{title="ERROR", text=message}
 end
 
+function show_info_popup(message)
+    local m = string_split(message, "\n")
+    app.alert{title="Perspective Tool", text=m}
+end
+
 function string_split(s, delimiter)
     local t={}
     for str in string.gmatch(s, "([^"..delimiter.."]+)") do
