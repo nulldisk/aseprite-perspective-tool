@@ -146,6 +146,14 @@ function throw_error(message)
     app.alert{title="ERROR", text=message}
 end
 
+function string_split(s, delimiter)
+    local t={}
+    for str in string.gmatch(s, "([^"..delimiter.."]+)") do
+        table.insert(t, str)
+    end
+    return t
+end
+
 function can_draw_perspective_line()
     if not app.activeSprite then
         return false
