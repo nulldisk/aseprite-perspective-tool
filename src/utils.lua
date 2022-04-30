@@ -141,11 +141,6 @@ function find_pixel_position()
     end
 end
 
-function throw_error(message)
-    --print(string.format("ERROR: %s", message))
-    app.alert{title="ERROR", text=message}
-end
-
 function show_info_popup(message)
     local m = string_split(message, "\n")
     app.alert{title="Perspective Tool", text=m}
