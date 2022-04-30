@@ -150,3 +150,14 @@ function can_draw_perspective_line()
 
     return true
 end
+
+function clear_active_selection()
+    local selection = Selection()
+    selection:add(app.activeSprite.selection)
+    if not selection.isEmpty then
+        app.activeSprite.selection:deselect()
+        return selection
+    else
+        return false
+    end
+end
