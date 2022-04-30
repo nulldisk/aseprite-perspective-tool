@@ -5,32 +5,37 @@
 -- Global variable for storing baked perspective pixel data.
 oven = nil
 
-function check_intersection(x1, y1, x2, y2, rect_xmin, rect_xmax, rect_ymin, rect_ymax)
+function check_intersection(p1, p2, rect)
+    local rect_xmin = rect[1]
+    local rect_ymin = rect[2]
+    local rect_xmax = rect[3]
+    local rect_ymax = rect[4]
+
     local t0 = 0
     local t1 = 1
-    local dx = x2 - x1
-    local dy = y2 - y1
+    local dx = p2.x - p1.x
+    local dy = p2.y - p1.y
     local p, q, r
 
     for i=1,4 do
         if i == 1 then
             p = -dx
-            q = -(rect_xmin - x1)
+            q = -(rect_xmin - p1.x)
         end
 
         if i == 2 then
             p = dx
-            q = (rect_xmax - x1)
+            q = (rect_xmax - p1.x)
         end
 
         if i == 3 then
             p = -dy
-            q = -(rect_ymin - y1)
+            q = -(rect_ymin - p1.y)
         end
 
         if i == 4 then
             p = dy
-            q = (rect_ymax - y1)
+            q = (rect_ymax - p1.y)
         end
 
         r = q/p
@@ -60,10 +65,10 @@ function check_intersection(x1, y1, x2, y2, rect_xmin, rect_xmax, rect_ymin, rec
         end
     end
 
-    local px1 = x1 + t0 * dx
-    local py1 = y1 + t0 * dy
-    local px2 = x1 + t1 * dx
-    local py2 = y1 + t1 * dy
+    local px1 = p1.x + t0 * dx
+    local py1 = p1.y + t0 * dy
+    local px2 = p1.x + t1 * dx
+    local py2 = p1.y + t1 * dy
 
     return {px1, py1, px2, py2}
 
