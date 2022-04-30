@@ -43,6 +43,25 @@ function draw_perspective_lines(points)
     end
 end
 
+function draw_vp_line(image, p1, p2, color)
+    local canvas_w = app.activeSprite.width
+    local canvas_h = app.activeSprite.height
+    local diagonal_length = line_length(Point(0, 0), Point(canvas_w, canvas_h))
+    local length = line_length(p1, p2)
+    local offset = diagonal_length - length
+    local v_norm = line_length(p1, p2)
+
+    -- Making sure all lines are long enough to cover the whole canvas
+    p2.x = p2.x + offset * (p2.x - p1.x)/v_norm
+    p2.y = p2.y + offset * (p2.y - p1.y)/v_norm
+
+    local rect = {0, 0, app.activeSprite.width, app.activeSprite.height}
+    local xs = check_intersection(p1, p2, rect) 
+    if xs then
+        draw_line(image, Point{xs[1], xs[2]}, Point{xs[3], xs[4]}, color)
+    end
+end
+
 --Line code based on Alois Zingl work released under the
 --MIT license http://members.chello.at/easyfilter/bresenham.html
 function draw_line(image, a_pos, b_pos, color)

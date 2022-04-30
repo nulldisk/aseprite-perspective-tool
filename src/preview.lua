@@ -180,60 +180,23 @@ function draw_preview(dialog, bake)
         end
 
         for i = 0, line_count, 1 do
-
             -- Drawing VP1 --
-            local x1 = vp1_pos
-            local y1 = horizon_height
-
-            local x2 = vhorizon_height
-            local y2 = v_spread[1] + (v_step * i)
-
-            local offset = math.abs(x1) + app.activeSprite.width
-            local v_norm = math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
-            local x2 = x2 + offset * (x2-x1)/v_norm
-            local y2 = y2 + offset * (y2-y1)/v_norm
-
-            local xs = check_intersection(x1, y1, x2, y2, 0, app.activeSprite.width, 0, app.activeSprite.height) 
-            if xs then
-                draw_line(preview_image, Point{xs[1], xs[2]}, Point{xs[3], xs[4]}, vp1_line_color)
-            end
+            local p1 = Point(vp1_pos, horizon_height)
+            local p2 = Point(vhorizon_height, v_spread[1] + (v_step * i))
+            draw_vp_line(preview_image, p1, p2, vp1_line_color)
 
             -- Drawing VP2 --
             if perspective_type >= 2 then
-                local x1 = vp2_pos
-                local y1 = horizon_height
-
-                local x2 = vhorizon_height
-                local y2 = v_spread[1] + (v_step * i)
-
-                local offset = math.abs(x1)
-                local v_norm = math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
-                local x2 = x2 + offset * (x2-x1)/v_norm
-                local y2 = y2 + offset * (y2-y1)/v_norm
-
-                local xs = check_intersection(x1, y1, x2, y2, 0, app.activeSprite.width, 0, app.activeSprite.height) 
-                if xs then
-                    draw_line(app.activeImage, Point{xs[1], xs[2]}, Point{xs[3], xs[4]}, vp2_line_color)
-                end
+                local p1 = Point(vp2_pos, horizon_height)
+                local p2 = Point(vhorizon_height, v_spread[1] + (v_step * i))
+                draw_vp_line(preview_image, p1, p2, vp2_line_color)
             end
 
             -- Drawing VP3 --
             if perspective_type >= 3 then
-                local x1 = vhorizon_height
-                local y1 = vp3_pos
-
-                local x2 = h_spread[1] + (h_step * i)
-                local y2 = horizon_height
-
-                local offset = app.activeSprite.height
-                local v_norm = math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
-                local x2 = x2 + offset * (x2-x1)/v_norm
-                local y2 = y2 + offset * (y2-y1)/v_norm
-
-                local xs = check_intersection(x1, y1, x2, y2, 0, app.activeSprite.width, 0, app.activeSprite.height) 
-                if xs then
-                    draw_line(app.activeImage, Point{xs[1], xs[2]}, Point{xs[3], xs[4]}, vp3_line_color)
-                end
+                local p1 = Point(vhorizon_height, vp3_pos)
+                local p2 = Point(h_spread[1] + (h_step * i), horizon_height)
+                draw_vp_line(preview_image, p1, p2, vp3_line_color)
             end
         end
 
