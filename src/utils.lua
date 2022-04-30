@@ -168,3 +168,9 @@ function clear_active_selection()
         return false
     end
 end
+
+function line_length(p1, p2)
+    local x = p2.x - p1.x
+    local y = p2.y - p1.y
+    return math.sqrt((x^2 + y^2))
+end
