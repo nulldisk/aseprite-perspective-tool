@@ -48,7 +48,6 @@ function draw_vp_line(image, p1, p2, color)
     local canvas_h = app.activeSprite.height
     local canvas_center = Point(canvas_w/2, canvas_h/2)
     local length = line_length(p1, p2)
-    local offset = diagonal_length - length
     local v_norm = line_length(p1, p2)
 
     local diagonal_length = 0
@@ -69,6 +68,7 @@ function draw_vp_line(image, p1, p2, color)
     end
 
     -- Making sure all lines are long enough to cover the whole canvas
+    local offset = diagonal_length - length
     p2.x = p2.x + offset * (p2.x - p1.x)/v_norm
     p2.y = p2.y + offset * (p2.y - p1.y)/v_norm
 
