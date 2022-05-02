@@ -30,11 +30,11 @@ dofile("storage.lua")
 dofile("preferences.lua")
 
 function init(plugin)
-    print("Initializing Perspective Helper v0.1")
+    print("Initializing Perspective Tool v0.1")
 
-    local config_dialog = Dialog{title="Perspective Helper"}
-    local plugin_config_dialog = Dialog{title="Perspective Helper Settings"}
-    local info_dialog = Dialog{title="Perspective Helper"}
+    local config_dialog = Dialog{title="Perspective Tool"}
+    local plugin_config_dialog = Dialog{title="Perspective Tool Settings"}
+    local info_dialog = Dialog{title="Perspective Tool"}
     
     -- BEGIN Plugin Config Dialog ------------------------------------------------------------
     plugin_config_dialog:combobox

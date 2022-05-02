@@ -1,6 +1,6 @@
 {
     "name": "perspective-helper",
-    "displayName":  "Perspective Helper",
+    "displayName":  "Perspective Tool",
     "description":  "Simple utility for perspective line drawing",
     "version":  "0.1",
     "license":  "MIT",
