@@ -587,7 +587,7 @@ function init(plugin)
         group="edit_new",
         onclick=function()
             plugin_initialize_prefs(plugin)
-            update_dialog_data(plugin_config_dialog, plugin.preferences)
+            dialog_update_data(plugin_config_dialog, plugin.preferences)
             plugin_config_dialog:show()
         end,
         onenabled=function()

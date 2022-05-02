@@ -48,14 +48,6 @@ function find_perspective_layer()
     end
 end
 
-function update_dialog_data(dialog, data)
-    local new_data = dialog.data
-    for k, v in pairs(data) do
-        new_data[k] = v
-    end
-    dialog.data = new_data
-end
-
 function print_table(table)
     print("---")
     for k, v in pairs(table) do

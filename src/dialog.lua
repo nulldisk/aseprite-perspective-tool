@@ -36,3 +36,11 @@ function dialog_increment_value(dialog_data, parameter, value)
     draw_preview(dialog_data)
     save_settings_to_layer(GUIDE_LAYER_NAME, dialog_data.data)
 end
+
+function dialog_update_data(dialog, data)
+    local new_data = dialog.data
+    for k, v in pairs(data) do
+        new_data[k] = v
+    end
+    dialog.data = new_data
+end
