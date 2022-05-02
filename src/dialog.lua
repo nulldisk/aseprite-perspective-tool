@@ -36,10 +36,3 @@ function dialog_increment_value(dialog_data, parameter, value)
     draw_preview(dialog_data)
     save_settings_to_layer(GUIDE_LAYER_NAME, dialog_data.data)
 end
-
-function dialog_show_info_dialog(dialog, message)
-    local dialog_data = dialog.data
-    dialog_data["message"] = message
-    dialog.data = data
-    dialog:show()
-end
