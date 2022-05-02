@@ -4,5 +4,11 @@ PREVIEW_LAYER_NAME = "perspective-preview"
 --permanent layer for drawing the guides and storing perspective settings in the project
 GUIDE_LAYER_NAME   = "perspective-guide"
 
---maximum amount of perspective lines you can set in the perspective settings dialog
-MAX_PREVIEW_PERSPECTIVE_LINES = 100
+--Allowed value ranges for the perspective settings dialog
+MIN_PREVIEW_LINE_AMOUNT = 1
+MAX_PREVIEW_LINE_AMOUNT = 100
+MIN_PREVIEW_LINE_SPREAD = 0
+MAX_PREVIEW_LINE_SPREAD = 1000
+MIN_PREVIEW_OPACITY = 0
+MAX_PREVIEW_OPACITY = 255
+

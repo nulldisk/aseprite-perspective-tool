@@ -1,10 +1,10 @@
 function dialog_validate_values(dialog_data)
-    local min_lines = 1
-    local max_lines = 100
-    local min_spread = 0
-    local max_spread = 1000
-    local opacity_max = 255
-    local opacity_min = 0
+    local min_lines = MIN_PREVIEW_LINE_AMOUNT
+    local max_lines = MAX_PREVIEW_LINE_AMOUNT
+    local min_spread = MIN_PREVIEW_LINE_SPREAD
+    local max_spread = MAX_PREVIEW_LINE_SPREAD
+    local opacity_min = MIN_PREVIEW_OPACITY
+    local opacity_max = MAX_PREVIEW_OPACITY
 
     local data = dialog_data.data
 
