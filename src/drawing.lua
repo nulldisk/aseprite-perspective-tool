@@ -35,8 +35,13 @@ function draw_perspective_lines(points)
     if pilot_pos then
         app.transaction(
             function()
-                for _, point in ipairs(points) do
-                    draw_perspective_line(point[1], point[2], pilot_pos)
+                local status, err = pcall(function()
+                    for _, point in ipairs(points) do
+                        draw_perspective_line(point[1], point[2], pilot_pos)
+                    end
+                end)
+                if status == false then
+                    print(err)
                 end
             end
         )

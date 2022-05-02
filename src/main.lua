@@ -490,10 +490,20 @@ function init(plugin)
             if not guide_layer then
                 app.transaction(
                     function ()
-                        local layer = app.activeSprite:newLayer()
-                        layer.name = GUIDE_LAYER_NAME
-                        reset_preview(config_dialog)
-                        save_settings_to_layer(GUIDE_LAYER_NAME, config_dialog.data)
+                        -- For safety measures, we run any transaction code inside a pcall.
+                        -- If Lua throws an error inside of a transaction, Aseprite has no
+                        -- idea what to do, causing undefined behavior and permanently
+                        -- breaking itself, eventually resulting in a SEGFAULT.
+                        local status, err = pcall(function()
+                            local layer = app.activeSprite:newLayer()
+                            layer.name = GUIDE_LAYER_NAME
+                            reset_preview(config_dialog)
+                            save_settings_to_layer(GUIDE_LAYER_NAME, config_dialog.data)
+                        end)
+
+                        if status == false then
+                            print(err)
+                        end
                     end
                 )
             end
@@ -504,25 +514,33 @@ function init(plugin)
             -- inside a transaction.
             app.transaction(
                 function ()
-                    oven = nil
+                    local status, err = pcall(function()
+                        local storage_type = plugin.preferences["storage_type"]
+                        local storage_path = plugin.preferences["storage_path"]
 
-                    local perspective_settings = load_settings(storage_type, storage_path)
+                        oven = nil
 
-                    if not perspective_settings then
-                        show_popup("Couldn't load perspective settings")
-                        return false
+                        local perspective_settings = load_settings(storage_type, storage_path)
+
+                        if not perspective_settings then
+                            show_popup("Couldn't load perspective settings")
+                            return
+                        end
+
+                        local dialog_data = config_dialog.data
+
+                        for k, v in pairs(perspective_settings) do
+                            dialog_data[k] = v
+                        end
+
+                        config_dialog.data = dialog_data
+
+                        show_preview_layer(config_dialog)
+                        config_dialog:show()
+                    end)
+                    if status == false then
+                        print(err)
                     end
-
-                    local dialog_data = config_dialog.data
-
-                    for k, v in pairs(perspective_settings) do
-                        dialog_data[k] = v
-                    end
-
-                    config_dialog.data = dialog_data
-
-                    show_preview_layer(config_dialog)
-                    config_dialog:show()
                 end
             )
 
@@ -535,12 +553,18 @@ function init(plugin)
             if oven then
                 app.transaction(
                     function()
-                        local guide_layer = find_layer(GUIDE_LAYER_NAME)
-                        app.activeLayer = guide_layer
-                        app.useTool{
-                            tool="pencil",
-                            points={Point{0,0}} }
-                    guide_layer:cel(1).image = oven
+                        local status, err = pcall(function()
+                            local guide_layer = find_layer(GUIDE_LAYER_NAME)
+                            app.activeLayer = guide_layer
+                            app.useTool{
+                                tool="pencil",
+                                points={Point{0,0}} }
+                            guide_layer:cel(1).image = oven
+                        end)
+
+                        if status == false then
+                            print(err)
+                        end
                     end)
             end
 
