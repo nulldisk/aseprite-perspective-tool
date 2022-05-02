@@ -5,6 +5,7 @@
 -- Global variable for storing baked perspective pixel data.
 oven = nil
 
+-- Liang-Barsky line clipping algorithm.
 function check_intersection(p1, p2, rect)
     local rect_xmin = rect[1]
     local rect_ymin = rect[2]
@@ -200,7 +201,7 @@ function draw_preview(dialog, bake)
             end
         end
 
-        --drawing the horizon line
+        -- Drawing the horizon line.
         draw_line(preview_image,
                   Point{0, horizon_height},
                   Point{app.activeSprite.width, horizon_height},
@@ -213,7 +214,7 @@ function draw_preview(dialog, bake)
                       horizon_color)
         end
         
-        --drawing vanishing points on the horizon line
+        -- Drawing vanishing points on the horizon line.
         draw_vanishing_point(preview_image, vp1_pos, horizon_height, vp1_point_color)
 
         if perspective_type >= 2 then

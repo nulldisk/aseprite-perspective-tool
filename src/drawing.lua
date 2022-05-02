@@ -1,3 +1,7 @@
+--------------------------------------------
+-- Functions for drawing lines and points --
+--------------------------------------------
+
 function draw_vanishing_point(image, pos_x, pos_y, color)
     image:drawPixel(pos_x-1, pos_y, color)
     image:drawPixel(pos_x, pos_y, color)
@@ -48,6 +52,9 @@ function draw_perspective_lines(points)
     end
 end
 
+-- Draws perspective preview lines.
+-- Clips the line inside the canvas and extends it
+-- to make sure it always goes through the whole canvas.
 function draw_vp_line(image, p1, p2, color)
     local canvas_w = app.activeSprite.width
     local canvas_h = app.activeSprite.height
@@ -72,7 +79,7 @@ function draw_vp_line(image, p1, p2, color)
         diagonal_length = line_length(p1, Point(0, canvas_h))
     end
 
-    -- Making sure all lines are long enough to cover the whole canvas
+    -- Making sure all lines are long enough to cover the whole canvas.
     local offset = diagonal_length - length
     p2.x = p2.x + offset * (p2.x - p1.x)/v_norm
     p2.y = p2.y + offset * (p2.y - p1.y)/v_norm
@@ -84,8 +91,8 @@ function draw_vp_line(image, p1, p2, color)
     end
 end
 
---Line code based on Alois Zingl work released under the
---MIT license http://members.chello.at/easyfilter/bresenham.html
+--Bresenham's line algorithm.
+--Courtesy of Alois Zingl: http://members.chello.at/easyfilter/bresenham.html
 function draw_line(image, a_pos, b_pos, color)
     local a = Point(a_pos.x, a_pos.y)
     local b = Point(b_pos.x, b_pos.y)

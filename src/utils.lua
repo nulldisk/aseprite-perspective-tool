@@ -1,3 +1,7 @@
+---------------------------------------------
+-- Collection of various utility functions --
+---------------------------------------------
+
 function table.contains(table, element)
     for _, value in pairs(table) do
         if value == element then
@@ -76,8 +80,7 @@ function string_to_table(string)
 end
 
 --Iterates through app.aciveImage looking for a pilot pixel.
---Returns the position of the pixel and executes an undo
---action if successful, otherwise returns false.
+--Returns the position of the pixel and executes an undo action if successful, otherwise returns false.
 function find_pixel_position()
     if not is_pixel_present(app.activeImage, app.pixelColor.rgba(255,0,0)) then
         return false
@@ -90,8 +93,7 @@ function find_pixel_position()
 
     local removed_selection = clear_active_selection()
 
-    --put two temporary pixels in the corners of the sprite to ensure
-    --the size of image matches the sprite
+    --Put two temporary pixels in the corners of the sprite to ensure the size of image matches the sprite.
     app.useTool{
         tool="pencil",
         points={Point{0,0}},
@@ -109,16 +111,16 @@ function find_pixel_position()
         local pixel_value = it()
         if pixel_value == app.pixelColor.rgba(255,0,0) then
 
-            --undo the two corner pixels placed before
+            --Undo the two corner pixels placed before.
             app.command.Undo()
             app.command.Undo()
 
-            -- undo deselect if it happened
+            -- Undo deselect if it happened.
             if removed_selection then
                 app.command.Undo()
             end
 
-            --undo the pilot pixel
+            --Undo the pilot pixel.
             app.command.Undo()
 
             point = Point{it.x, it.y}
@@ -161,6 +163,7 @@ end
 function clear_active_selection()
     local selection = Selection()
     selection:add(app.activeSprite.selection)
+
     if not selection.isEmpty then
         app.activeSprite.selection:deselect()
         return selection

@@ -1,3 +1,7 @@
+--------------------------------------------
+-- Functions for manipulating dialog data --
+--------------------------------------------
+
 function dialog_validate_values(dialog_data)
     local min_lines = MIN_PREVIEW_LINE_AMOUNT
     local max_lines = MAX_PREVIEW_LINE_AMOUNT
