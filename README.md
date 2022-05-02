@@ -1,4 +1,8 @@
-# Aseprite Perspective Helper
+![logo](https://user-images.githubusercontent.com/22166897/166294587-f13ca78f-3a3b-4dc2-bba6-abeb71b8f03d.png)
+
+![preview_1](https://user-images.githubusercontent.com/22166897/166328834-e3d8456d-61b4-45b4-9de5-97b601ebba62.gif)
+
+
 Simple plugin for Aseprite providing an interactive perspective ruler. It can store different perspective configs for every project and draw perspective lines on a dedicated layer, precisely where you need them.
 
 Because of Aseprite's API limitations, there are caveats to be aware of. Make sure to follow this readme if you want to use it.
@@ -17,6 +21,8 @@ Once you are done tweaking the values, you can close the dialog. Your settings s
 The plugin settings dialog can be accessed in `Edit > Perspective helper settings...`. In this dialog you can tweak global settings for the plugin. These settings apply for every project. 
 
 ### Drawing perspective lines
+![preview_2](https://user-images.githubusercontent.com/22166897/166330820-50d50407-293a-429a-b0c2-3ebab44a4d37.gif)
+
 If your perspective is configured you can now start drawing perspective lines using the `Draw line from VPx` commands provided by the plugin. It may be a good idea to map them to some keyboard shortcuts for quick access.
 
 Unfortunatelly, with current state of Aseprite's API, there is no way to access the mouse position, so we need to provide a reference for the position of where we want the line to end in a different way. To do so we are going to use a red (#FF0000) pilot pixel. The plugin is going to look for that pixel to figure out the needed coordinates and undo it automatically, so you can safely place it on top of whatever layer you are working on right now. The perspective line is going to be drawn on the `perspective-guide` layer.
