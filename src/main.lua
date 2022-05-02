@@ -30,7 +30,7 @@ dofile("storage.lua")
 dofile("preferences.lua")
 
 function init(plugin)
-    print("[Perspective Tool] Initializing plugin v0.1")
+    print("[Perspective Tool] Initializing plugin " .. PLUGIN_VERSION)
     plugin_initialize_prefs(plugin)
 
     local config_dialog = Dialog{title="Perspective Tool"}
@@ -65,6 +65,11 @@ function init(plugin)
     plugin_config_dialog:label
     {
         text="                                                    "
+    }
+
+    plugin_config_dialog:label
+    {
+        text=PLUGIN_VERSION
     }
     
     plugin_config_dialog:button

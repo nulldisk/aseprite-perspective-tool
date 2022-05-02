@@ -2,6 +2,9 @@
 -- Configuration file --
 ------------------------
 
+-- Version number displayed in logs and plugin settings dialog
+PLUGIN_VERSION = "v.0.1"
+
 -- Temporary layer for drawing perspective preview when the dialog is open.
 PREVIEW_LAYER_NAME = "perspective-preview"
 
