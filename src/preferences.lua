@@ -3,12 +3,16 @@
 -----------------------------------------------------------------
 
 function plugin_initialize_prefs(plugin)
-    if not plugin.preferences["storage_type"] then
-        plugin.preferences["storage_type"] = "layer"
-    end
-    
-    if not plugin.preferences["storage_path"] then
-        plugin.preferences["storage_path"] = ""
+    local required_prefs = {"storage_type", "storage_path"}
+
+    for _, pref in ipairs(required_prefs) do
+        if plugin.preferences[pref] == nil then
+            plugin.preferences["storage_type"] = DEFAULT_STORAGE_TYPE
+            plugin.preferences["storage_path"] = DEFAULT_STORAGE_PATH
+            plugin.preferences["preview_auto_update"] = DEFAULT_PREVIEW_AUTO_UPDATE
+            print("[Perspective Tool] Preferences initialized")
+            break
+        end
     end
 end
 
