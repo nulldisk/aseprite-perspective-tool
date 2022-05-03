@@ -6,6 +6,9 @@ Simple plugin for Aseprite providing an interactive perspective ruler. It can st
 
 Because of Aseprite's API limitations, there are caveats to be aware of. Make sure to follow this readme if you want to use it.
 
+## Installation
+Best way is to grab a package from the [releases](https://github.com/nulldisk/aseprite-perspective-tool/releases) page, then navigate to `Edit > Preferences... > Extensions`, click `Add Extension` and load the `.aseprite-extension` package. It should show on the list of installed extensions as `Perspective Tool`. Hit `Apply`, restart Aseprite and you are ready to go.
+
 ## How does it work?
 Before you can start drawing perspective lines, you need to initialize perspective settings for your project. You can do this by opening the perspective settings dialog in `Edit > Perspective settings...`. This will initialize the settings to default values and create the `perspective-guide` layer. This layer is going to be used to draw all the perspective lines, so you probably want to put it on top of your layer stack and drop the opacity a bit. 
 
