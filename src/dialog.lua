@@ -1,10 +1,14 @@
+--------------------------------------------
+-- Functions for manipulating dialog data --
+--------------------------------------------
+
 function dialog_validate_values(dialog_data)
-    local min_lines = 1
-    local max_lines = 100
-    local min_spread = 0
-    local max_spread = 1000
-    local opacity_max = 255
-    local opacity_min = 0
+    local min_lines = MIN_PREVIEW_LINE_AMOUNT
+    local max_lines = MAX_PREVIEW_LINE_AMOUNT
+    local min_spread = MIN_PREVIEW_LINE_SPREAD
+    local max_spread = MAX_PREVIEW_LINE_SPREAD
+    local opacity_min = MIN_PREVIEW_OPACITY
+    local opacity_max = MAX_PREVIEW_OPACITY
 
     local data = dialog_data.data
 
@@ -37,9 +41,10 @@ function dialog_increment_value(dialog_data, parameter, value)
     save_settings_to_layer(GUIDE_LAYER_NAME, dialog_data.data)
 end
 
-function dialog_show_info_dialog(dialog, message)
-    local dialog_data = dialog.data
-    dialog_data["message"] = message
-    dialog.data = data
-    dialog:show()
+function dialog_update_data(dialog, data)
+    local new_data = dialog.data
+    for k, v in pairs(data) do
+        new_data[k] = v
+    end
+    dialog.data = new_data
 end

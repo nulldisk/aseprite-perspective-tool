@@ -1,3 +1,26 @@
+
+-- MIT License                                                                    
+--                                                                                
+-- Copyright (c) 2022 NULLDiSK                                                    
+--                                                                                
+-- Permission is hereby granted, free of charge, to any person obtaining a copy   
+-- in the Software without restriction, including without limitation the rights   
+-- of this software and associated documentation files (the "Software"), to deal  
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      
+-- copies of the Software, and to permit persons to whom the Software is          
+-- furnished to do so, subject to the following conditions:                       
+--                                                                                
+-- The above copyright notice and this permission notice shall be included in all 
+-- copies or substantial portions of the Software.                                
+--                                                                                
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
+-- SOFTWARE.                                                                      
+
 dofile("config.lua")
 dofile("utils.lua")
 dofile("dialog.lua")
@@ -7,11 +30,12 @@ dofile("storage.lua")
 dofile("preferences.lua")
 
 function init(plugin)
-    print("Initializing Perspective Helper v0.1")
+    print("[Perspective Tool] Initializing plugin " .. PLUGIN_VERSION)
+    plugin_initialize_prefs(plugin)
 
-    local config_dialog = Dialog{title="Perspective Helper"}
-    local plugin_config_dialog = Dialog{title="Perspective Helper Settings"}
-    local info_dialog = Dialog{title="Perspective Helper"}
+    local config_dialog = Dialog{title="Perspective Tool"}
+    local plugin_config_dialog = Dialog{title="Perspective Tool Settings"}
+    local info_dialog = Dialog{title="Perspective Tool"}
     
     -- BEGIN Plugin Config Dialog ------------------------------------------------------------
     plugin_config_dialog:combobox
@@ -30,9 +54,22 @@ function init(plugin)
         focus=false
     }
 
+    plugin_config_dialog:check
+    {
+        id="preview_auto_update",
+        label="Preview",
+        text="Update preview automatically when fields are edited",
+        selected=true
+    }
+
     plugin_config_dialog:label
     {
         text="                                                    "
+    }
+
+    plugin_config_dialog:label
+    {
+        text=PLUGIN_VERSION
     }
     
     plugin_config_dialog:button
@@ -81,14 +118,16 @@ function init(plugin)
     {
         id="horizon_height",
         text="0",
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
     {
         id="vertical_horizon_height",
         text="0",
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     -- Horizon controls --
@@ -151,21 +190,24 @@ function init(plugin)
     {
         id="vp1_pos", 
         text="0", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
     {
         id="vp2_pos", 
         text="0", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
    
     config_dialog:number
     {
         id="vp3_pos", 
         text="0", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     -- VP1 Controls--
@@ -252,14 +294,16 @@ function init(plugin)
     {
         id="line_count", 
         text="10", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
     {
         id="line_spread", 
         text="0", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     -- Line Count Controls --
@@ -323,7 +367,8 @@ function init(plugin)
     {
         id="line_opacity", 
         text="255", 
-        decimals=integer
+        decimals=integer,
+        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
     }
 
     config_dialog:check
@@ -377,27 +422,13 @@ function init(plugin)
         title="Draw line from V1",
         group="edit_new",
         onclick=function()
-            local guides_layer = find_layer(GUIDE_LAYER_NAME)
-
-            if guides_layer then
-                local storage_type = plugin.preferences["storage_type"]
-                local storage_path = plugin.preferences["storage_path"]
-                local settings = load_settings(storage_type, storage_path)
-                local color = app.pixelColor.rgba(0,0,0)
-                local pilot_pos = find_pixel_position()
-
-                if pilot_pos then
-                    local vp_pos = Point{settings["vp1_pos"], settings["horizon_height"]} 
-                    draw_perspective_line(vp_pos, pilot_pos, color)
-                end
-            end
+            local storage_type = plugin.preferences["storage_type"]
+            local storage_path = plugin.preferences["storage_path"]
+            local settings = load_settings(storage_type, storage_path)
+            draw_perspective_line(settings["vp1_pos"], settings["horizon_height"])
         end,
         onenabled=function()
-            if not app.activeSprite then
-                return false
-            else
-                return true
-            end
+            return can_draw_perspective_line()
         end
     }
 
@@ -406,27 +437,28 @@ function init(plugin)
         title="Draw line from V2",
         group="edit_new",
         onclick=function()
-            local guides_layer = find_layer(GUIDE_LAYER_NAME)
-
-            if guides_layer then
-                local storage_type = plugin.preferences["storage_type"]
-                local storage_path = plugin.preferences["storage_path"]
-                local settings = load_settings(storage_type, storage_path)
-                local color = app.pixelColor.rgba(0,0,0)
-                local pilot_pos = find_pixel_position()
-
-                if pilot_pos then
-                    local vp_pos = Point{settings["vp2_pos"], settings["horizon_height"]} 
-                    draw_perspective_line(vp_pos, pilot_pos, color)
-                end
-            end
+            local storage_type = plugin.preferences["storage_type"]
+            local storage_path = plugin.preferences["storage_path"]
+            local settings = load_settings(storage_type, storage_path)
+            draw_perspective_line(settings["vp2_pos"], settings["horizon_height"])
         end,
         onenabled=function()
-            if not app.activeSprite then
-                return false
-            else
-                return true
-            end
+            return can_draw_perspective_line()
+        end
+    }
+
+    plugin:newCommand{
+        id="DrawLineV3",
+        title="Draw line from V3",
+        group="edit_new",
+        onclick=function()
+            local storage_type = plugin.preferences["storage_type"]
+            local storage_path = plugin.preferences["storage_path"]
+            local settings = load_settings(storage_type, storage_path)
+            draw_perspective_line(settings["vertical_horizon_height"], settings["vp3_pos"])
+        end,
+        onenabled=function()
+            return can_draw_perspective_line()
         end
     }
 
@@ -435,37 +467,19 @@ function init(plugin)
         title="Draw lines from vanishing points",
         group="edit_new",
         onclick=function()
-            local guides_layer = find_layer(GUIDE_LAYER_NAME)
+            local storage_type = plugin.preferences["storage_type"]
+            local storage_path = plugin.preferences["storage_path"]
+            local settings = load_settings(storage_type, storage_path)
 
-            if guides_layer then
-                local storage_type = plugin.preferences["storage_type"]
-                local storage_path = plugin.preferences["storage_path"]
-                local settings = load_settings(storage_type, storage_path)
-                local color = app.pixelColor.rgba(0,0,0)
-                local pilot_pos = find_pixel_position()
+            local points = {
+                {settings["vp1_pos"], settings["horizon_height"]},
+                {settings["vp2_pos"], settings["horizon_height"]}
+            }
 
-                if pilot_pos then
-                    local points = {
-                        Point{settings["vp1_pos"],settings["horizon_height"]},
-                        Point{settings["vp2_pos"],settings["horizon_height"]}
-                    }
-
-                    app.transaction(
-                        function()
-                            for _, vp_pos in ipairs(points) do
-                                draw_perspective_line(vp_pos, pilot_pos, color)
-                            end
-                        end
-                    )
-                end
-            end
+            draw_perspective_lines(points)
         end,
         onenabled=function()
-            if not app.activeSprite then
-                return false
-            else
-                return true
-            end
+            return can_draw_perspective_line()
         end
     }
 
@@ -480,10 +494,10 @@ function init(plugin)
             if storage_type == "file" then
                 if not app.fs.isFile(app.activeSprite.filename) then
                     local message = "Your perspective data storage is set to 'file' mode " ..
-                                    "but the project doesn't have a file. Please save " ..
+                                    "but the project doesn't have a file.\nPlease save " ..
                                     "the project and give it a name before editing " ..
                                     "perspective settings."
-                    print(message)
+                    show_popup(message)
                     return false
                 end
 
@@ -496,7 +510,7 @@ function init(plugin)
 
                 if perspective_settings == "DIR_NOT_FOUND" then
                     local message = "'%s' directory doesn't exist."
-                    throw_error(string.format(message, storage_path))
+                    show_popup(string.format(message, storage_path))
                     return false
                 end
             end
@@ -505,37 +519,57 @@ function init(plugin)
             if not guide_layer then
                 app.transaction(
                     function ()
-                        local layer = app.activeSprite:newLayer()
-                        layer.name = GUIDE_LAYER_NAME
-                        reset_preview(config_dialog)
-                        save_settings_to_layer(GUIDE_LAYER_NAME, config_dialog.data)
+                        -- For safety measures, we run any transaction code inside a pcall.
+                        -- If Lua throws an error inside of a transaction, Aseprite has no
+                        -- idea what to do, causing undefined behavior and permanently
+                        -- breaking itself, eventually resulting in a SEGFAULT.
+                        local status, err = pcall(function()
+                            local layer = app.activeSprite:newLayer()
+                            layer.name = GUIDE_LAYER_NAME
+                            reset_preview(config_dialog)
+                            save_settings_to_layer(GUIDE_LAYER_NAME, config_dialog.data)
+                        end)
+
+                        if status == false then
+                            print(err)
+                        end
                     end
                 )
             end
+
+            local removed_selection = clear_active_selection()
 
             -- Load perspective settings and show the perspective config dialog
             -- inside a transaction.
             app.transaction(
                 function ()
-                    oven = nil
+                    local status, err = pcall(function()
+                        local storage_type = plugin.preferences["storage_type"]
+                        local storage_path = plugin.preferences["storage_path"]
 
-                    local perspective_settings = load_settings(storage_type, storage_path)
+                        oven = nil
 
-                    if not perspective_settings then
-                        throw_error("Couldn't load perspective settings")
-                        return false
+                        local perspective_settings = load_settings(storage_type, storage_path)
+
+                        if not perspective_settings then
+                            show_popup("Couldn't load perspective settings")
+                            return
+                        end
+
+                        local dialog_data = config_dialog.data
+
+                        for k, v in pairs(perspective_settings) do
+                            dialog_data[k] = v
+                        end
+
+                        config_dialog.data = dialog_data
+
+                        show_preview_layer(config_dialog)
+                        config_dialog:show()
+                    end)
+                    if status == false then
+                        print(err)
                     end
-
-                    local dialog_data = config_dialog.data
-
-                    for k, v in pairs(perspective_settings) do
-                        dialog_data[k] = v
-                    end
-
-                    config_dialog.data = dialog_data
-
-                    show_preview_layer(config_dialog)
-                    config_dialog:show()
                 end
             )
 
@@ -548,13 +582,23 @@ function init(plugin)
             if oven then
                 app.transaction(
                     function()
-                        local guide_layer = find_layer(GUIDE_LAYER_NAME)
-                        app.activeLayer = guide_layer
-                        app.useTool{
-                            tool="pencil",
-                            points={Point{0,0}} }
-                    guide_layer:cel(1).image = oven
+                        local status, err = pcall(function()
+                            local guide_layer = find_layer(GUIDE_LAYER_NAME)
+                            app.activeLayer = guide_layer
+                            app.useTool{
+                                tool="pencil",
+                                points={Point{0,0}} }
+                            guide_layer:cel(1).image = oven
+                        end)
+
+                        if status == false then
+                            print(err)
+                        end
                     end)
+            end
+
+            if removed_selection then
+                app.activeSprite.selection = removed_selection
             end
         end,
         onenabled=function()
@@ -571,8 +615,7 @@ function init(plugin)
         title="Perspective plugin settings...",
         group="edit_new",
         onclick=function()
-            plugin_initialize_prefs(plugin)
-            update_dialog_data(plugin_config_dialog, plugin.preferences)
+            dialog_update_data(plugin_config_dialog, plugin.preferences)
             plugin_config_dialog:show()
         end,
         onenabled=function()

@@ -1,3 +1,7 @@
+---------------------------------------------
+-- Collection of various utility functions --
+---------------------------------------------
+
 function table.contains(table, element)
     for _, value in pairs(table) do
         if value == element then
@@ -48,14 +52,6 @@ function find_perspective_layer()
     end
 end
 
-function update_dialog_data(dialog, data)
-    local new_data = dialog.data
-    for k, v in pairs(data) do
-        new_data[k] = v
-    end
-    dialog.data = new_data
-end
-
 function print_table(table)
     print("---")
     for k, v in pairs(table) do
@@ -74,7 +70,7 @@ end
 
 function string_to_table(string)
     local t = {}
-    for k, v in string.gmatch(string, "([%w_]+)=([%w_ ]+)") do
+    for k, v in string.gmatch(string, "([%w_]+)=([%w_ -]+)") do
         if v == "true" then v = true end
         if v == "false" then v = false end
         t[k] = v
@@ -84,10 +80,8 @@ function string_to_table(string)
 end
 
 --Iterates through app.aciveImage looking for a pilot pixel.
---Returns the position of the pixel and executes an undo
---action if successful, otherwise returns false.
+--Returns the position of the pixel and executes an undo action if successful, otherwise returns false.
 function find_pixel_position()
-
     if not is_pixel_present(app.activeImage, app.pixelColor.rgba(255,0,0)) then
         return false
     end
@@ -97,8 +91,9 @@ function find_pixel_position()
     local spr_w = app.activeSprite.width
     local spr_h = app.activeSprite.height
 
-    --put two temporary pixels in the corners of the sprite to ensure
-    --the size of image matches the sprite
+    local removed_selection = clear_active_selection()
+
+    --Put two temporary pixels in the corners of the sprite to ensure the size of image matches the sprite.
     app.useTool{
         tool="pencil",
         points={Point{0,0}},
@@ -116,11 +111,16 @@ function find_pixel_position()
         local pixel_value = it()
         if pixel_value == app.pixelColor.rgba(255,0,0) then
 
-            --undo the two corner pixels placed before
+            --Undo the two corner pixels placed before.
             app.command.Undo()
             app.command.Undo()
 
-            --undo the pilot pixel
+            -- Undo deselect if it happened.
+            if removed_selection then
+                app.command.Undo()
+            end
+
+            --Undo the pilot pixel.
             app.command.Undo()
 
             point = Point{it.x, it.y}
@@ -135,7 +135,45 @@ function find_pixel_position()
     end
 end
 
-function throw_error(message)
-    --print(string.format("ERROR: %s", message))
-    app.alert{title="ERROR", text=message}
+function show_popup(message)
+    local m = string_split(message, "\n")
+    app.alert{title="Perspective Tool", text=m}
+end
+
+function string_split(s, delimiter)
+    local t={}
+    for str in string.gmatch(s, "([^"..delimiter.."]+)") do
+        table.insert(t, str)
+    end
+    return t
+end
+
+function can_draw_perspective_line()
+    if not app.activeSprite then
+        return false
+    end
+
+    if not find_layer(GUIDE_LAYER_NAME) then
+        return false
+    end
+
+    return true
+end
+
+function clear_active_selection()
+    local selection = Selection()
+    selection:add(app.activeSprite.selection)
+
+    if not selection.isEmpty then
+        app.activeSprite.selection:deselect()
+        return selection
+    else
+        return false
+    end
+end
+
+function line_length(p1, p2)
+    local x = p2.x - p1.x
+    local y = p2.y - p1.y
+    return math.sqrt((x^2 + y^2))
 end
