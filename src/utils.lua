@@ -177,3 +177,15 @@ function line_length(p1, p2)
     local y = p2.y - p1.y
     return math.sqrt((x^2 + y^2))
 end
+
+-- Compares color object to raw color data
+function compare_colors(color, color_int)
+    local color = app.pixelColor.rgba(color.red, color.green, color.blue, color.alpha)
+
+    if color == color_int then
+        return true
+    else
+        return false
+    end
+end
+
