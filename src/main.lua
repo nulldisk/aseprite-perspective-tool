@@ -21,6 +21,8 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
 -- SOFTWARE.                                                                      
 
+g_preferences = {}
+
 dofile("config.lua")
 dofile("utils.lua")
 dofile("dialog.lua")
@@ -32,6 +34,7 @@ dofile("preferences.lua")
 function init(plugin)
     print("[Perspective Tool] Initializing plugin " .. PLUGIN_VERSION)
     plugin_initialize_prefs(plugin)
+    plugin_update_global_prefs(plugin)
 
     local config_dialog = Dialog{title="Perspective Tool"}
     local plugin_config_dialog = Dialog{title="Perspective Tool Settings"}
@@ -119,7 +122,7 @@ function init(plugin)
         id="horizon_height",
         text="0",
         decimals=integer,
-        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
+        onchange=function() update_preview_layer(config_dialog, g_preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
@@ -127,7 +130,7 @@ function init(plugin)
         id="vertical_horizon_height",
         text="0",
         decimals=integer,
-        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
+        onchange=function() update_preview_layer(config_dialog, g_preferences["preview_auto_update"]) end
     }
 
     -- Horizon controls --
@@ -191,7 +194,7 @@ function init(plugin)
         id="vp1_pos", 
         text="0", 
         decimals=integer,
-        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
+        onchange=function() update_preview_layer(config_dialog, g_preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
@@ -199,7 +202,7 @@ function init(plugin)
         id="vp2_pos", 
         text="0", 
         decimals=integer,
-        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
+        onchange=function() update_preview_layer(config_dialog, g_preferences["preview_auto_update"]) end
     }
    
     config_dialog:number
@@ -207,7 +210,7 @@ function init(plugin)
         id="vp3_pos", 
         text="0", 
         decimals=integer,
-        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
+        onchange=function() update_preview_layer(config_dialog, g_preferences["preview_auto_update"]) end
     }
 
     -- VP1 Controls--
@@ -295,7 +298,7 @@ function init(plugin)
         id="line_count", 
         text="10", 
         decimals=integer,
-        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
+        onchange=function() update_preview_layer(config_dialog, g_preferences["preview_auto_update"]) end
     }
 
     config_dialog:number
@@ -303,7 +306,7 @@ function init(plugin)
         id="line_spread", 
         text="0", 
         decimals=integer,
-        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
+        onchange=function() update_preview_layer(config_dialog, g_preferences["preview_auto_update"]) end
     }
 
     -- Line Count Controls --
@@ -368,7 +371,7 @@ function init(plugin)
         id="line_opacity", 
         text="255", 
         decimals=integer,
-        onchange=function() update_preview_layer(config_dialog, plugin.preferences["preview_auto_update"]) end
+        onchange=function() update_preview_layer(config_dialog, g_preferences["preview_auto_update"]) end
     }
 
     config_dialog:check
@@ -422,8 +425,8 @@ function init(plugin)
         title="Draw line from V1",
         group="edit_new",
         onclick=function()
-            local storage_type = plugin.preferences["storage_type"]
-            local storage_path = plugin.preferences["storage_path"]
+            local storage_type = g_preferences["storage_type"]
+            local storage_path = g_preferences["storage_path"]
             local settings = load_settings(storage_type, storage_path)
             draw_perspective_line(settings["vp1_pos"], settings["horizon_height"])
         end,
@@ -437,8 +440,8 @@ function init(plugin)
         title="Draw line from V2",
         group="edit_new",
         onclick=function()
-            local storage_type = plugin.preferences["storage_type"]
-            local storage_path = plugin.preferences["storage_path"]
+            local storage_type = g_preferences["storage_type"]
+            local storage_path = g_preferences["storage_path"]
             local settings = load_settings(storage_type, storage_path)
             draw_perspective_line(settings["vp2_pos"], settings["horizon_height"])
         end,
@@ -452,8 +455,8 @@ function init(plugin)
         title="Draw line from V3",
         group="edit_new",
         onclick=function()
-            local storage_type = plugin.preferences["storage_type"]
-            local storage_path = plugin.preferences["storage_path"]
+            local storage_type = g_preferences["storage_type"]
+            local storage_path = g_preferences["storage_path"]
             local settings = load_settings(storage_type, storage_path)
             draw_perspective_line(settings["vertical_horizon_height"], settings["vp3_pos"])
         end,
@@ -467,8 +470,8 @@ function init(plugin)
         title="Draw lines from vanishing points",
         group="edit_new",
         onclick=function()
-            local storage_type = plugin.preferences["storage_type"]
-            local storage_path = plugin.preferences["storage_path"]
+            local storage_type = g_preferences["storage_type"]
+            local storage_path = g_preferences["storage_path"]
             local settings = load_settings(storage_type, storage_path)
 
             local points = {
@@ -488,8 +491,8 @@ function init(plugin)
         title="Configure Perspective...",
         group="edit_new",
         onclick=function()
-            local storage_type = plugin.preferences["storage_type"]
-            local storage_path = plugin.preferences["storage_path"]
+            local storage_type = g_preferences["storage_type"]
+            local storage_path = g_preferences["storage_path"]
 
             if storage_type == "file" then
                 if not app.fs.isFile(app.activeSprite.filename) then
@@ -544,8 +547,8 @@ function init(plugin)
             app.transaction(
                 function ()
                     local status, err = pcall(function()
-                        local storage_type = plugin.preferences["storage_type"]
-                        local storage_path = plugin.preferences["storage_path"]
+                        local storage_type = g_preferences["storage_type"]
+                        local storage_path = g_preferences["storage_path"]
 
                         oven = nil
 
@@ -615,7 +618,7 @@ function init(plugin)
         title="Perspective plugin settings...",
         group="edit_new",
         onclick=function()
-            dialog_update_data(plugin_config_dialog, plugin.preferences)
+            dialog_update_data(plugin_config_dialog, g_preferences)
             plugin_config_dialog:show()
         end,
         onenabled=function()

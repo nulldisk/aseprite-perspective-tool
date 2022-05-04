@@ -56,5 +56,11 @@ function plugin_update_prefs(plugin, prefs)
             plugin_save_pref(plugin, pref, value)
         end
     end
+    plugin_update_global_prefs(plugin)
 end
 
+function plugin_update_global_prefs(plugin)
+    for pref, value in pairs(plugin.preferences) do
+        g_preferences[pref] = value
+    end
+end
