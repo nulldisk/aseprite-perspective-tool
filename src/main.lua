@@ -21,6 +21,7 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
 -- SOFTWARE.                                                                      
 
+g_last_used_color = Color{0,0,0}
 g_preferences = {}
 
 dofile("config.lua")
@@ -55,6 +56,21 @@ function init(plugin)
         label="Storage path",
         text="",
         focus=false
+    }
+
+    plugin_config_dialog:color
+    {
+        id="pilot_color",
+        label="Pilot color",
+        color=Color{r=255,g=0,b=0},
+    }
+
+    plugin_config_dialog:check
+    {
+        id="smart_pilot_color",
+        label="",
+        text="Enable smart pilot color cycling",
+        selected=true
     }
 
     plugin_config_dialog:check

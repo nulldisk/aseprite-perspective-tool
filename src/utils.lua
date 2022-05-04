@@ -81,8 +81,8 @@ end
 
 --Iterates through app.aciveImage looking for a pilot pixel.
 --Returns the position of the pixel and executes an undo action if successful, otherwise returns false.
-function find_pixel_position()
-    if not is_pixel_present(app.activeImage, app.pixelColor.rgba(255,0,0)) then
+function find_pixel_position(pilot_color)
+    if not is_pixel_present(app.activeImage, pilot_color) then
         return false
     end
 
@@ -109,7 +109,7 @@ function find_pixel_position()
     
     for it in app.activeImage:pixels() do
         local pixel_value = it()
-        if pixel_value == app.pixelColor.rgba(255,0,0) then
+        if pixel_value == pilot_color then
 
             --Undo the two corner pixels placed before.
             app.command.Undo()

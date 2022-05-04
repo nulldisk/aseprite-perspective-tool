@@ -3,13 +3,16 @@
 -----------------------------------------------------------------
 
 function plugin_initialize_prefs(plugin)
-    local required_prefs = {"storage_type", "storage_path"}
+    local required_prefs = {"storage_type", "storage_path", "pilot_color"}
 
     for _, pref in ipairs(required_prefs) do
         if plugin.preferences[pref] == nil then
+            print(pref)
             plugin.preferences["storage_type"] = DEFAULT_STORAGE_TYPE
             plugin.preferences["storage_path"] = DEFAULT_STORAGE_PATH
             plugin.preferences["preview_auto_update"] = DEFAULT_PREVIEW_AUTO_UPDATE
+            plugin.preferences["pilot_color"] = DEFAULT_PILOT_COLOR
+            plugin.preferences["smart_pilot_color"] = DEFAULT_SMART_PILOT_COLOR
             print("[Perspective Tool] Preferences initialized")
             break
         end
@@ -43,7 +46,10 @@ function plugin_save_pref(plugin, pref, value)
                 show_popup(string.format(message, value, pref))
             end
         end
-    elseif pref == "preview_auto_update" then
+    elseif pref == "pilot_color" then
+        local pixel_color = app.pixelColor.rgba(value.red, value.green, value.blue, 255)
+        plugin.preferences[pref] = pixel_color
+    elseif pref == "preview_auto_update" or pref == "smart_pilot_color" then
         plugin.preferences[pref] = value
     else
         show_popup("Attempted to set an unknown pref '" .. pref .. "'")
@@ -64,3 +70,4 @@ function plugin_update_global_prefs(plugin)
         g_preferences[pref] = value
     end
 end
+

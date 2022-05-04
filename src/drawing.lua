@@ -11,30 +11,35 @@ function draw_vanishing_point(image, pos_x, pos_y, color)
 end
 
 function draw_perspective_line(vp_pos, horizon_height, pilot_pos)
+    local line_color = app.pixelColor.rgba(0,0,0)
     local target_layer = find_layer(GUIDE_LAYER_NAME)
-    pilot_pos = pilot_pos or find_pixel_position()
+    pilot_pos = pilot_pos or find_pixel_position(g_preferences["pilot_color"])
 
-    if target_layer then
-        local line_color = app.pixelColor.rgba(0,0,0)
+    if not compare_colors(app.fgColor, g_preferences["pilot_color"]) then
+        g_last_used_color = app.fgColor
+    end
 
-        if pilot_pos then
-            local vp_point = Point{vp_pos, horizon_height}
+    if pilot_pos then
+        local vp_point = Point{vp_pos, horizon_height}
+        local removed_selection = clear_active_selection()
 
-            local removed_selection = clear_active_selection()
-
-            app.useTool{
-                tool="pencil",
-                points={pilot_pos, vp_point},
-                color=line_color,
-                layer=target_layer
-            }
-
+        app.useTool{
+            tool="pencil",
+            points={pilot_pos, vp_point},
+            color=line_color,
+            layer=target_layer
+        }
+    elseif g_preferences["smart_pilot_color"] == true then
+        if compare_colors(app.fgColor, g_preferences["pilot_color"]) then
+            app.fgColor = g_last_used_color
+        else
+            app.fgColor = g_preferences["pilot_color"]
         end
     end
 end
 
 function draw_perspective_lines(points)
-    local pilot_pos = find_pixel_position()
+    local pilot_pos = find_pixel_position(g_preferences["pilot_color"])
 
     if pilot_pos then
         app.transaction(
